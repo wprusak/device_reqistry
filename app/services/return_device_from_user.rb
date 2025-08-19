@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 class ReturnDeviceFromUser
-  def initialize(requesting_user:, serial_number:)
+  def initialize(user:, serial_number:, from_user:)
     # TODO
-    @requesting_user = requesting_user
+    @user = user
     @serial_number = serial_number
+    @from_user = from_user
   end
 
   def call
@@ -29,11 +30,11 @@ class ReturnDeviceFromUser
   end
 
   def return_device(device)
-    device.update!(user: nil, returned_by: @requesting_user)
+    device.update!(user: nil, returned_by_id: @from_user)
   end
   
   def user_owns_device?(device)
-    device.user_id == @requesting_user.id
+    device.user_id == @from_user
   end
 
   def device_exists?

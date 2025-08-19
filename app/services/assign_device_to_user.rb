@@ -14,10 +14,13 @@ class AssignDeviceToUser
     end
 
     # Raise custom error if user is not allowed
-    unless user_allowed_to_assign? && !user_already_has_device?
+    unless user_allowed_to_assign? 
       raise RegistrationError::Unauthorized, "User is not allowed to assign this device or already owns it."
     end
 
+    unless !user_had_device?
+      raise AssigningError::AlreadyUsedOnUser, "User already used this device."
+    end
     # Create device if it doesn't exist
     device ||= create_device
 
@@ -45,5 +48,9 @@ class AssignDeviceToUser
 
   def create_device
     Device.create!(serial_number: @serial_number, user_id: @new_device_owner_id)
+  end
+
+  def user_had_device?
+    Device.exists?(serial_number: @serial_number, returned_by_id: @requesting_user.id)
   end
 end

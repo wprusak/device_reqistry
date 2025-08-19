@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_19_151732) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_19_180933) do
   create_table "api_keys", force: :cascade do |t|
     t.integer "bearer_id", null: false
     t.string "bearer_type", null: false
@@ -25,7 +25,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_19_151732) do
     t.string "serial_number"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "user_id", null: false
+    t.integer "user_id"
+    t.integer "returned_by_id"
+    t.index ["returned_by_id"], name: "index_devices_on_returned_by_id"
     t.index ["user_id"], name: "index_devices_on_user_id"
   end
 
@@ -38,4 +40,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_19_151732) do
   end
 
   add_foreign_key "devices", "users"
+  add_foreign_key "devices", "users", column: "returned_by_id"
 end
