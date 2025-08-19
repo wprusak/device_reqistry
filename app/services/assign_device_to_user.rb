@@ -1,4 +1,4 @@
-
+require_relative '../errors/device_errors'
 class AssignDeviceToUser
   def initialize(requesting_user:, serial_number:, new_device_owner_id:)
     @requesting_user = requesting_user

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require 'device_errors'
+require_relative '../app/errors/device_errors'
 
 RSpec.describe DevicesController, type: :controller do
   let(:api_key) { create(:api_key) }
