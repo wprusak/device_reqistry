@@ -8,6 +8,10 @@ class AssignDeviceToUser
 
   def call
     device = Device.find_by(serial_number: @serial_number)
+    # if device exists and is already assigned to another user, raise an error
+    if device && device_already_assigned?(device)
+      raise AssigningError::AlreadyUsedOnOtherUser, "Device with serial number #{@serial_number} is already assigned to another user."
+    end
 
     # Raise custom error if user is not allowed
     unless user_allowed_to_assign? && !user_already_has_device?
@@ -33,6 +37,10 @@ class AssignDeviceToUser
 
   def user_already_has_device?
     Device.exists?(user_id: @new_device_owner_id, serial_number: @serial_number)
+  end
+
+  def device_already_assigned?(device)
+    device.user_id.present?
   end
 
   def create_device
