@@ -2,21 +2,20 @@
 
 class ReturnDeviceFromUser
   def initialize(user:, serial_number:, from_user:)
-    # TODO
     @user = user
     @serial_number = serial_number
     @from_user = from_user
   end
 
   def call
-    # TODO
     device = find_device
+    
     # Check if the device exists
-    raise ActiveRecord::RecordNotFound, "Device with serial number #{@serial_number} not found." unless device_exists?
-
+    raise ActiveRecord::RecordNotFound, "Device with serial number #{@serial_number} not found" unless device
+    
     # Check if the requesting user owns the device
     unless user_owns_device?(device)
-      raise ActiveRecord::RecordNotFound, "User does not own the device with serial number #{@serial_number}."
+      raise ActiveRecord::RecordNotFound, "User does not own the device with serial number #{@serial_number}"
     end
 
     # Proceed to return the device
@@ -30,14 +29,11 @@ class ReturnDeviceFromUser
   end
 
   def return_device(device)
-    device.update!(user: nil, returned_by_id: @from_user)
+    device.update!(user_id: nil, returned_by_id: @from_user)
+    device
   end
   
   def user_owns_device?(device)
-    device.user_id == @from_user
-  end
-
-  def device_exists?
-    Device.exists?(serial_number: @serial_number)
+    device.user_id == @user.id
   end
 end
