@@ -35,7 +35,7 @@ class AssignDeviceToUser
   end
 
   def user_allowed_to_assign?
-    @requesting_user.id == @new_device_owner_id
+    @requesting_user.id == @new_device_owner_id.to_i
   end
 
   def user_already_has_device?
