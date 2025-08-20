@@ -12,6 +12,11 @@ class DevicesController < ApplicationController
     render json: { error: 'Device not found' }, status: :not_found
   end
 
+  rescue_from AssigningError::AlreadyUsedOnUser do |_e|
+    render json: { error: 'User already used this device.' }, status: :unprocessable_entity
+  end
+
+
   def assign
     AssignDeviceToUser.new(
       requesting_user: @current_user,
