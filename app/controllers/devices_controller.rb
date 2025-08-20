@@ -16,6 +16,9 @@ class DevicesController < ApplicationController
     render json: { error: 'User already used this device.' }, status: :unprocessable_entity
   end
 
+  rescue_from AssigningError::AlreadyUsedOnOtherUser do |_e|
+    render json: { error: 'Device is already assigned to another user.' }, status: :unprocessable_entity
+  end
 
   def assign
     AssignDeviceToUser.new(

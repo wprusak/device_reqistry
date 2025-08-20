@@ -62,7 +62,7 @@ RSpec.describe DevicesController, type: :controller do
         it 'returns an error response' do
           assign
           expect(response.code).to eq("422")
-          expect(JSON.parse(response.body)).to eq({ 'error' => 'Device with serial number 123456 is already assigned to another user.' })
+          expect(JSON.parse(response.body)).to eq({ 'error' => 'Device is already assigned to another user.' })
         end
       end
     end
