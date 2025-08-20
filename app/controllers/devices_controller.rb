@@ -8,6 +8,10 @@ class DevicesController < ApplicationController
     render json: { error: 'Unauthorized' }, status: :unprocessable_entity 
   end
 
+  rescue_from ActiveRecord::RecordNotFound do |_e|
+    render json: { error: 'Device not found' }, status: :not_found
+  end
+
   def assign
     AssignDeviceToUser.new(
       requesting_user: @current_user,

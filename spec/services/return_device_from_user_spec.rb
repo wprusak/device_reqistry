@@ -24,10 +24,11 @@ RSpec.describe ReturnDeviceFromUser do
       end
     end  
     context 'when the user does not own the device' do
+      let!(:device) { create(:device, serial_number: serial_number, user: create(:user)) }
 
       let(:from_user) { create(:user).id }
       it 'raises an error' do
-        expect { return_device }.to raise_error(ActiveRecord::RecordNotFound)
+        expect { return_device }.to raise_error(RegistrationError::Unauthorized)
       end
     end
 

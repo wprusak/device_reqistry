@@ -15,7 +15,7 @@ class ReturnDeviceFromUser
     
     # Check if the requesting user owns the device
     unless user_owns_device?(device)
-      raise ActiveRecord::RecordNotFound, "User does not own the device with serial number #{@serial_number}"
+      raise RegistrationError::Unauthorized, "User is not allowed to assign this device."
     end
 
     # Proceed to return the device
