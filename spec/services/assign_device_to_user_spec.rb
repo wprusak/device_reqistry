@@ -32,12 +32,8 @@ RSpec.describe AssignDeviceToUser do
     end
 
     context 'when a user tries to register a device that was already assigned to and returned by the same user' do
-      before do
-        assign_device
-        ReturnDeviceFromUser.new(user: user, serial_number: serial_number, from_user: user.id).call
-      end
-
       it 'does not allow to register' do
+        create(:device, serial_number: serial_number, returned_by_id: user.id)
         expect { assign_device }.to raise_error(AssigningError::AlreadyUsedOnUser)
       end
     end
