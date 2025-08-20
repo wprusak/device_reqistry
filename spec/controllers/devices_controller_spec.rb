@@ -24,15 +24,30 @@ RSpec.describe DevicesController, type: :controller do
       end
 
       context 'when user assigns a device to self' do
-        let(:new_owner_id) { user.id }
+        context 'when user never assigned a device before' do
+          let(:new_owner_id) { user.id }
 
-        it 'returns a success response' do
-          assign
-          expect(response).to be_successful
+          it 'returns a success response' do
+            assign
+            expect(response).to be_successful
+          end
+        end
+
+        context 'when user already assigned a device before' do
+          before do
+            create(:device, serial_number: '123456', returned_by_id: user.id)
+          end
+
+          let(:new_owner_id) { user.id }
+
+          it 'raises an error' do
+            assign
+            expect(response.code).to eq("422")
+            expect(JSON.parse(response.body)).to eq({ 'error' => 'User already used this device.' })
+          end
         end
       end
     end
-
     context 'when the user is not authenticated' do
       it 'returns an unauthorized response' do
         post :assign
