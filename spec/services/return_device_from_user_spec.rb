@@ -7,12 +7,13 @@ RSpec.describe ReturnDeviceFromUser do
     described_class.new(
       user: user,
       serial_number: serial_number,
-      from_user: user.id
+      from_user: from_user
     ).call
   end  
 
   let(:user) { create(:user) }
   let(:serial_number) { '123456' }
+  let(:from_user) { user.id }
   
   context 'when user returns a device' do
     context 'when the device does not exist' do
@@ -24,7 +25,7 @@ RSpec.describe ReturnDeviceFromUser do
     end  
     context 'when the user does not own the device' do
 
-      let(:other_user) { create(:user) }
+      let(:from_user) { create(:user).id }
       it 'raises an error' do
         expect { return_device }.to raise_error(ActiveRecord::RecordNotFound)
       end

@@ -7,18 +7,18 @@ class AssignDeviceToUser
   end
 
   def call
+    
     device = Device.find_by(serial_number: @serial_number)
+    unless user_allowed_to_assign? 
+      raise RegistrationError::Unauthorized, "User is not allowed to assign this device."
+    end
+
     # if device exists and is already assigned to another user, raise an error
     if device && device_already_assigned?(device)
       raise AssigningError::AlreadyUsedOnOtherUser, "Device with serial number #{@serial_number} is already assigned to another user."
     end
 
-    # Raise custom error if user is not allowed
-    unless user_allowed_to_assign? 
-      raise RegistrationError::Unauthorized, "User is not allowed to assign this device or already owns it."
-    end
-
-    unless !user_had_device?
+    if user_had_device?
       raise AssigningError::AlreadyUsedOnUser, "User already used this device."
     end
     # Create device if it doesn't exist
