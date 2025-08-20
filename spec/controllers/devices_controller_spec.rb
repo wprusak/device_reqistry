@@ -47,6 +47,24 @@ RSpec.describe DevicesController, type: :controller do
           end
         end
       end
+      context 'when user tries to assign a device that is already assigned to another user' do
+        let(:new_owner_id) { user.id }
+        let(:other_user) { create(:user) }
+
+        before do
+          AssignDeviceToUser.new(
+            requesting_user: other_user,
+            serial_number: '123456',
+            new_device_owner_id: other_user.id
+          ).call
+        end
+
+        it 'returns an error response' do
+          assign
+          expect(response.code).to eq("422")
+          expect(JSON.parse(response.body)).to eq({ 'error' => 'Device with serial number 123456 is already assigned to another user.' })
+        end
+      end
     end
     context 'when the user is not authenticated' do
       it 'returns an unauthorized response' do
